@@ -2,9 +2,11 @@
 
 class PushNotification {
 
-    public function app($appName)
-    {
-        return new App(\Config::get('laravel-push-notification::'.$appName));
+    public function app($service, $config){
+        if($service != 'apns' || $service != 'gcm'){
+            $service = 'apns';
+        }
+        return new App($config, $service);
     }
 
     public function Message()
