@@ -7,20 +7,33 @@ use Sly\NotificationPusher\PushManager,
 
 class App {
     
-    public function __construct($config)
-    {
+    public function __construct($config, $service){
         $this->pushManager = new PushManager($config['environment'] == "development" ? PushManager::ENVIRONMENT_DEV : PushManager::ENVIRONMENT_PROD);
 
-        $adapterClassName = 'Sly\\NotificationPusher\\Adapter\\'.ucfirst($config['service']);
+        $adapterClassName = 'Sly\\NotificationPusher\\Adapter\\'.ucfirst($service);
 
-        $adapterConfig = $config;
+        $adapterConfig      = [];
+        $adapterConfig['environment']       = $config['environment'];//This can be deleted
+        $adapterConfig['service']           = $service;//This can be deleted
+
+        if($service == 'apns'){
+            if($config['environment'] == "development"){
+                $adapterConfig['certificate']   = storage_path().$config['ios_development_certificate'];
+                $adapterConfig['passPhrase']    = $config['ios_development_passphrase'];
+            }else{
+                $adapterConfig['certificate']   = storage_path().$config['ios_production_certificate'];
+                $adapterConfig['passPhrase']    = $config['ios_production_passphrase'];
+            }
+        }else{
+            $adapterConfig['apiKey']            = $config['android_api_key'];
+        }
+
         unset($adapterConfig['environment'], $adapterConfig['service']);
 
         $this->adapter = new $adapterClassName($adapterConfig);
     }
 
-    public function to($addressee)
-    {
+    public function to($addressee){
         $this->addressee = is_string($addressee) ? new Device($addressee) : $addressee;
 
         return $this;
