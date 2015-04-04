@@ -17,9 +17,10 @@ class LaravelPushNotificationServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot()
-    {
-        $this->package('davibennun/laravel-push-notification');
+    public function boot(){
+        $this->publishes([
+             __DIR__.'/../../config/config.php' => config_path('push-notification.php')
+         ], 'config');
     }
 
     /**
@@ -27,10 +28,8 @@ class LaravelPushNotificationServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function register()
-    {
-        $this->app['pushNotification'] = $this->app->share(function($app)
-        {
+    public function register(){
+        $this->app['pushNotification'] = $this->app->share(function($app){
             return new PushNotification();
         });
     }
@@ -40,8 +39,7 @@ class LaravelPushNotificationServiceProvider extends ServiceProvider {
      *
      * @return array
      */
-    public function provides()
-    {
+    public function provides(){
         return array();
     }
 
