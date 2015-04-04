@@ -13,8 +13,6 @@ class App {
         $adapterClassName = 'Sly\\NotificationPusher\\Adapter\\'.ucfirst($service);
 
         $adapterConfig      = [];
-        $adapterConfig['environment']       = $config['environment'];//This can be deleted
-        $adapterConfig['service']           = $service;//This can be deleted
 
         if($service == 'apns'){
             if($config['environment'] == "development"){
