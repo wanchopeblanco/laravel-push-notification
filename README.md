@@ -54,21 +54,22 @@ Where all first level keys corresponds to an service configuration, each service
 
 ##### The certificate path must be an absolute path, so in the configuration file you can use these:
 ```
-//Path to the 'app' folder
-'certificate'=>app_path().'/myCert.pem'
+//Path to the 'storage' folder
+'certificate'=>storage_path().'/myCert.pem'
 ```
 Laravel functions are also available `public_path()` `storage_path()` `base_path()`
 
 # Usage
 ```php
-
-PushNotification::app('appNameIOS')
+$service = 'ios';
+PushNotification::app($service, $config)
                 ->to($deviceToken)
                 ->send('Hello World, i`m a push message');
 
 ```
-Where app argument `appNameIOS` refers to defined service in config file.
-To multiple devices and optioned message:
+Where app argument $service refers to the service used to send push message
+'apns' OR 'gcm'
+##To multiple devices and optioned message:
 ```php
 $devices = PushNotification::DeviceCollection(array(
     PushNotification::Device('token', array('badge' => 5)),
@@ -92,7 +93,8 @@ $message = PushNotification::Message('Message Text',array(
     ))
 ));
 
-collection = PushNotification::app('appNameIOS')
+$service = 'ios';
+collection = PushNotification::app($service, $config)
     ->to($devices)
     ->send($message);
 
